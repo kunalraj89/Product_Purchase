@@ -1,0 +1,63 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Aug 10 09:20:02 2019
+
+@author: Amita
+"""
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+df=pd.read_csv(r"E:\EDA\Purchased.csv")
+
+#Spliting the data for Y and X axis
+x=df.iloc[:,[2,3]].values
+y=df.iloc[:,4].values
+
+# spliting the data for train and test
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.25,random_state=0)
+
+### scaling the data(Taking the logarthism)
+from sklearn.preprocessing import StandardScaler
+sc=StandardScaler()
+x_train=sc.fit_transform(x_train)
+x_test=sc.fit_transform(x_test)
+
+from sklearn.linear_model import LogisticRegression
+model=LogisticRegression(random_state=0)
+model.fit(x_train,y_train)
+
+y_pred=model.predict(x_test)
+
+from sklearn.metrics import confusion_matrix
+cm=confusion_matrix(y_test,y_pred)
+# matrix
+#           pred no     pred yes
+# actual no 63           5
+# actual yes 7           25
+
+score=model.score(x_test,y_test)
+
+cm1=[[63,5],[7,25]]
+
+precision = np.sum(25 / 30)
+recall = np.sum(true_pos / true_pos + false_neg)
+## for multi dimenition confusion matrics creation
+from sklearn import metrics
+cm1= metrics.confusion_matrix(y_test,y_pred)
+
+##confusion metrics ploting
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10,10))
+sns.heatmap(cm,annot=True,fmt=".3f",linewidths=.5,square=True ,cmap='blues_r')
+plt.ylabel=''
+plt.xlabel=''
+all_sample_title='score'.format(score)
+plt.title(all_sample_title,size=15)
+plt.show()
+
+
+
